@@ -50,20 +50,21 @@ console.log(employees);
 }
 */
 
-let employeeObj;
+// let person;
+let employeeBonusReport = [];
 
-employeeObj = employees[0];
-console.log(employeeObj);
+// person = employees[0];
+// console.log(person);
 
 let percentage;
 
-function calculateBonusPercentage(employeeObj) {
-  if (employeeObj.reviewRating <= 2) {
+function calculateBonusPercentage(person) {
+  if (person.reviewRating <= 2) {
     // check for review rating
     percentage = 0;
-  } else if (employeeObj.reviewRating === 3) {
+  } else if (person.reviewRating === 3) {
     percentage = 0.04;
-  } else if (employeeObj.reviewRating === 4) {
+  } else if (person.reviewRating === 4) {
     percentage = 0.06;
   } else {
     percentage = 0.1;
@@ -71,31 +72,45 @@ function calculateBonusPercentage(employeeObj) {
 }
 
 // function takes employee object from for of loop to determine employee bonus breakdown
-function newEmployeeProfile(employeeObj) {
+function newEmployeeProfile(person) {
   // create new object
   let newObj = {};
   // assigns original employee property name value to newObj property value
-  newObj.name = employeeObj.name;
+  newObj.name = person.name;
   // determine bonus percentage by employee
-  calculateBonusPercentage(employeeObj);
-  newObj.bonusPercentage = percentage;
+  calculateBonusPercentage(person);
+  // determine special cases
+  // if employee has been with company for more than 15 years (4 digit employeeNumber)
+  if (person.employeeNumber.length === 4) {
+    percentage += 0.05;
+    if (percentage > 0.13) {
+      // left off here
+      percentage = 0.13;
+    }
+  }
 
-  newObj.bonusPercentage = percentage;
-  newObj.totalBonus = employeeObj.annualSalary * percentage;
+  newObj.bonusPercentage = Math.round(percentage * 100);
+  newObj.totalBonus = person.annualSalary * percentage;
+  let grossTotal = parseInt(person.annualSalary) + parseInt(newObj.totalBonus);
+  if (grossTotal > 65000 && newObj.bonusPercentage != 0) {
+    newObj.bonusPercentage -= 0.01;
+  }
+  newObj.totalBonus = Math.round(
+    newObj.bonusPercentage * parseInt(person.annualSalary)
+  );
   newObj.totalCompensation =
-    parseInt(employeeObj.annualSalary) + parseInt(newObj.totalBonus);
+    parseInt(person.annualSalary) + parseInt(newObj.totalBonus);
+  employeeBonusReport.push(newObj);
   return newObj; // newObj = {name: Atticus, bonusPercentage: #}
 }
 
-employeeObj = employees[1];
+// console.log(newEmployeeProfile(person));
+// console.log(newEmployeeProfile(employees[2]));
+// console.log(employeeBonusReport);
 
-console.log(newEmployeeProfile(employeeObj));
-console.log(newEmployeeProfile(employees[2]));
-
-/*
 //testing purposes
 for (let person of employees) {
-    function newEmployeeProfile(person);
-    console.log(newObj);
-  }
-*/
+  // loop of employees
+  console.log(newEmployeeProfile(person));
+}
+// console.log(employeeBonusReport); // after newEmployeeProfile
